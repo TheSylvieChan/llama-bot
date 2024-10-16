@@ -14,3 +14,4 @@ i will respond as either Y, who is your creator, or a different person from the 
 ```
 
 2. you need to install the discord.py and ollama-python using pip
+3. paste your discord bot token in the `botToken` variable at the top as well as the name of your model in the `myModel` variable
