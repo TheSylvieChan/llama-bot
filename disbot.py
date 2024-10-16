@@ -144,10 +144,9 @@ async def save(interaction):
     name="load",
     description="load my last saved chat history",
 )
-async def save(interaction):
+async def load(interaction):
   global chatlogDM
   chatlogDM = import_from_json(f'{myModel}-log.json')
   await interaction.response.send_message(f"`my logs have been loaded from the server`")
-  # await interaction.response.send_message(file=discord.File('chatlog.json'))
 
 client.run(botToken)
