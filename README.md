@@ -1,5 +1,5 @@
 # llama-bot
-a discord bot written in python that runs on a locally hosted llama3.1 ollama instance with chat history, import and export
+a discord bot written in python that runs using a locally hosted llama3.1 ollama instance with chat history, import and export
 
 ## features
 - chat history with the ability to clear, export and import conversations using discord slash commands
