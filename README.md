@@ -2,7 +2,7 @@
 a discord bot written in python that runs using a locally hosted llama3.1 ollama instance with chat history, import and export
 
 ## features
-- chat history with the ability to clear, export and import conversations using discord slash commands
+- chat history with the ability to clear, export and import conversations using discord slash commands (chat history is tracked separately between DMs and servers)
 - ability to distinguish between different users talking to it (adds discord username as a prefix to responses going to the model)
 - some basic server and user info slash commands
 
