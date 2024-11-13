@@ -12,7 +12,8 @@ import json
 import re
 
 #---------------------------------------| variables |-------------------------------------------------
-myModel = ''
+myModel = 'llama3.1'
+imageModel = 'llava:7b'
 botToken = ''
 #-----------------------------------------------------------------------------------------------------
 
@@ -86,41 +87,104 @@ async def serverinfo(interaction: discord.Interaction):
 async def on_message(message):
   if message.author == client.user:
     return
+  
   if client.user.mention in message.content.split() and not isinstance(message.channel, discord.DMChannel):
     async with message.channel.typing():
-      full_string = message.content
-      cut_string = re.sub('<.*?>', f'{myModel}', full_string)
-      prompt_dict = {
+      if message.attachments:
+          a= message.attachments[0]# save the attachment as a local file
+          await a.save(f"{a.filename}")
+          loadedimg = f"{a.filename}"
+          print("image found, saving...")
+          prompt_dict = {
+          "role": "user",
+          "content": [
+            {"type": "image"},
+            {"type": "text", "text": f'message.author.display_name: ' + f'{message.content}'},
+            ],
+            }
+          full_string = message.content
+          cut_string = re.sub('<.*?>', f'{myModel}', full_string)
+          modprompt = f'{message.author.display_name}: ' + f'{message.content}'
+          feed_dict = {
           'role': 'user',
-          'content':f'{message.author.display_name}: ' + f'{cut_string}'
-        }
-      chatlogGrp.append(prompt_dict)
-      ai_response = ollama.chat(model=myModel, messages=chatlogGrp)
-      resp = ai_response['message']['content']  
-      resp_dict = {
-        'role': 'assistant',
-        'content': f'{resp}'
-      }
-      chatlogGrp.append(resp_dict)
-      await message.channel.send(f'{resp}')
-  else:
-    if isinstance(message.channel, discord.DMChannel):
-      async with message.channel.typing():
+          'content':f'{message.author.display_name}: ' + f'{message.content}'
+          }
+          chatlogDM.append(feed_dict)
+          
+          ai_response = ollama.generate(model=imageModel, prompt=f'{modprompt}',images=[loadedimg])
+          resp = ai_response['response']
+          
+          resp_dict = {
+            'role': 'assistant',
+            'content': f'{resp}'
+          }
+          chatlogDM.append(resp_dict)
+          await message.channel.send(f'{resp}')
+      else:
         full_string = message.content
         cut_string = re.sub('<.*?>', f'{myModel}', full_string)
         prompt_dict = {
-          'role': 'user',
-          'content':f'{message.author.display_name}: ' + f'{cut_string}'
-        }
-        chatlogDM.append(prompt_dict)
-        ai_response = ollama.chat(model=myModel, messages=chatlogDM)
-        resp = ai_response['message']['content']
+            'role': 'user',
+            'content':f'{message.author.display_name}: ' + f'{cut_string}'
+          }
+        chatlogGrp.append(prompt_dict)
+        ai_response = ollama.chat(model=f'{myModel}', messages=chatlogGrp)
+        resp = ai_response['message']['content']  
         resp_dict = {
           'role': 'assistant',
           'content': f'{resp}'
         }
-        chatlogDM.append(resp_dict)
+        chatlogGrp.append(resp_dict)
         await message.channel.send(f'{resp}')
+  else:
+    if isinstance(message.channel, discord.DMChannel):
+      async with message.channel.typing():
+        if message.attachments:
+          a= message.attachments[0]# save the attachment as a local file
+          await a.save(f"{a.filename}")
+          loadedimg = f"{a.filename}"
+          print("image found, saving...")
+          prompt_dict = {
+          "role": "user",
+          "content": [
+            {"type": "image"},
+            {"type": "text", "text": f'{message.author.display_name}: ' + f'{message.content}'},
+            ],
+            }
+          full_string = message.content
+          cut_string = re.sub('<.*?>', f'{myModel}', full_string)
+          modprompt = f'{message.author.display_name}: ' + f'{message.content}'
+          feed_dict = {
+          'role': 'user',
+          'content':f'{message.author.display_name}: ' + f'{message.content}'
+          }
+          chatlogDM.append(feed_dict)
+          
+          ai_response = ollama.generate(model=imageModel, prompt=f'{modprompt}',images=[loadedimg])
+          resp = ai_response['response']
+          
+          resp_dict = {
+            'role': 'assistant',
+            'content': f'{resp}'
+          }
+          chatlogDM.append(resp_dict)
+          await message.channel.send(f'{resp}')
+        else:
+          full_string = message.content
+          cut_string = re.sub('<.*?>', f'{myModel}', full_string)
+          prompt_dict = {
+            'role': 'user',
+            'content':f'{message.author.display_name}: ' + f'{cut_string}'
+          }
+          chatlogDM.append(prompt_dict)
+          ai_response = ollama.chat(model=f'{myModel}', messages=chatlogDM)
+          resp = ai_response['message']['content']
+          resp_dict = {
+            'role': 'assistant',
+            'content': f'{resp}'
+          }
+          chatlogDM.append(resp_dict)
+          await message.channel.send(f'{resp}')
 
 @client.tree.command(
     name="clear",
@@ -149,4 +213,4 @@ async def load(interaction):
   chatlogDM = import_from_json(f'{myModel}-log.json')
   await interaction.response.send_message(f"`my logs have been loaded from the server`")
 
-client.run(botToken)
+client.run(f'{botToken}')
