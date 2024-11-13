@@ -6,6 +6,7 @@ a discord bot written in python that runs using a locally hosted llama3.1 ollama
 - ability to distinguish between different users talking to it (adds discord username as a prefix to responses going to the model)
 - ability to recognize and describe images sent
 - some basic server and user info slash commands
+- (please note that when talking to the bot in a server it will only respond if you @ (mention) it. in DMs it will always respond)
 
 ## images
 ![alt text](images/IMG_7302.jpeg)
