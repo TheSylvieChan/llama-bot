@@ -1,5 +1,5 @@
 # llama-bot
-a discord bot written in python that runs using a locally hosted llama3.1 ollama instance with chat history, import and export
+a discord bot written in python that runs using a locally hosted llama3.1 ollama instance with chat history, chat import and export and image recognition using llava
 
 ## features
 - chat history with the ability to clear, export and import conversations using discord slash commands (chat history is tracked separately between DMs and servers)
@@ -21,4 +21,4 @@ i will respond as either Y, who is your creator, or a different person from the 
 
 2. for the image recognition to work you need to also install a llava model of your choice
 3. you need to install the discord.py and ollama-python using pip
-4. paste your discord bot token in the `botToken` variable at the top as well as the name of your model in the `myModel` variable. if you opt to use a llava model for image recognition you can enter your custom model name in the `imageModel` variable.
+4. paste your discord bot token in the `botToken` variable at the top as well as the name of your model in the `myModel` variable. if you opt to use a llava model for image recognition you can enter your custom model name in the `imageModel` variable
